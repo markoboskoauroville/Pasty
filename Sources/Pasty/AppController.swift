@@ -65,19 +65,19 @@ final class AppController: NSObject, NSApplicationDelegate {
     private func setupStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
-            button.image = NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: "Pesty")
+            button.image = NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: "Pasty")
             button.image?.isTemplate = true
         }
         let menu = NSMenu()
-        menu.addItem(withTitle: "Open Pesty   \(Settings.shared.hotkeyDisplay)",
+        menu.addItem(withTitle: "Open Pasty   \(Settings.shared.hotkeyDisplay)",
                      action: #selector(menuOpen), keyEquivalent: "").target = self
         menu.addItem(.separator())
         menu.addItem(withTitle: "Settings…", action: #selector(menuSettings), keyEquivalent: ",").target = self
-        menu.addItem(withTitle: "Clear History", action: #selector(menuClear), keyEquivalent: "").target = self
+        menu.addItem(withTitle: "Clear Unpinned", action: #selector(menuClear), keyEquivalent: "").target = self
         menu.addItem(.separator())
-        let about = menu.addItem(withTitle: "About Pesty", action: #selector(menuAbout), keyEquivalent: "")
+        let about = menu.addItem(withTitle: "About Pasty", action: #selector(menuAbout), keyEquivalent: "")
         about.target = self
-        menu.addItem(withTitle: "Quit Pesty", action: #selector(menuQuit), keyEquivalent: "q").target = self
+        menu.addItem(withTitle: "Quit Pasty", action: #selector(menuQuit), keyEquivalent: "q").target = self
         item.menu = menu
         statusItem = item
     }
@@ -91,10 +91,10 @@ final class AppController: NSObject, NSApplicationDelegate {
     func showAbout() {
         NSApp.activate(ignoringOtherApps: true)
         NSApp.orderFrontStandardAboutPanel(options: [
-            .applicationName: "Pesty",
+            .applicationName: "Pasty",
             .applicationVersion: Bundle.main.appVersion,
             .credits: NSAttributedString(
-                string: "A free, open-source clipboard manager for macOS.\nInspired by Paste.",
+                string: "A clipboard manager for macOS. One board, pins in place.\nForked from Pesty by momenbasel, MIT.",
                 attributes: [.font: NSFont.systemFont(ofSize: 11)])
         ])
     }
@@ -135,7 +135,6 @@ final class AppController: NSObject, NSApplicationDelegate {
             previousApp = front
         }
         store.searchText = ""
-        store.source = .history
         store.selectFirst()
 
         if barController == nil {
@@ -176,7 +175,7 @@ final class AppController: NSObject, NSApplicationDelegate {
         let view = SettingsView()
         let host = NSHostingController(rootView: view)
         let win = NSWindow(contentViewController: host)
-        win.title = "Pesty Settings"
+        win.title = "Pasty Settings"
         win.styleMask = [.titled, .closable, .miniaturizable]
         win.setContentSize(NSSize(width: 520, height: 560))
         win.center()
@@ -208,6 +207,18 @@ final class AppController: NSObject, NSApplicationDelegate {
             let items = store.visibleItems
             if n <= items.count { pasteItem(items[n - 1]) }
             return nil
+        }
+
+        // Cmd P pins or unpins the highlighted card. Cmd Option arrow shuffles a
+        // pinned card along, so the whole pin workflow is reachable from the keys
+        // as well as the mouse.
+        if cmd, !opt, let chars = event.charactersIgnoringModifiers, chars.lowercased() == "p" {
+            if let sel = store.selectedItem { store.togglePin(sel) }
+            return nil
+        }
+        if cmd, opt, let sel = store.selectedItem, sel.pinned {
+            if code == kVK_LeftArrow { store.movePinned(sel, by: -1); return nil }
+            if code == kVK_RightArrow { store.movePinned(sel, by: 1); return nil }
         }
 
         switch code {

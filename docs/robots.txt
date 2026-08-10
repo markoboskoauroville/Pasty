@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.moamenbasel.com/pesty/sitemap.xml
+Sitemap: https://www.moamenbasel.com/pasty/sitemap.xml

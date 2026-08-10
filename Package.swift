@@ -2,15 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "Pesty",
+    name: "Pasty",
     platforms: [.macOS(.v14)],
     products: [
-        .executable(name: "Pesty", targets: ["Pesty"])
+        .executable(name: "Pasty", targets: ["Pasty"])
     ],
     targets: [
         .executableTarget(
-            name: "Pesty",
-            path: "Sources/Pesty",
+            name: "Pasty",
+            path: "Sources/Pasty",
             swiftSettings: [
                 .unsafeFlags(["-parse-as-library"])
             ]

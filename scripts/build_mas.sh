@@ -4,10 +4,10 @@ cd "$(dirname "$0")/.."
 
 VERSION="${VERSION:-1.1.0}"
 BUILD="${BUILD:-5}"
-APP="packaging/Pesty.app"
-PKG="packaging/Pesty-MAS-$VERSION.pkg"
-ENT="packaging/Pesty-MAS.entitlements"
-PROFILE="${PROFILE:-packaging/Pesty_MAS.provisionprofile}"
+APP="packaging/Pasty.app"
+PKG="packaging/Pasty-MAS-$VERSION.pkg"
+ENT="packaging/Pasty-MAS.entitlements"
+PROFILE="${PROFILE:-packaging/Pasty_MAS.provisionprofile}"
 APP_IDENTITY="${APP_IDENTITY:-Apple Distribution: Moamen Basel (H3WXHVTP97)}"
 INSTALLER_IDENTITY="${INSTALLER_IDENTITY:-3rd Party Mac Developer Installer: Moamen Basel (H3WXHVTP97)}"
 
@@ -15,20 +15,20 @@ INSTALLER_IDENTITY="${INSTALLER_IDENTITY:-3rd Party Mac Developer Installer: Moa
 
 echo "==> Building universal release binary (sandboxed, no Accessibility — MAS flag)"
 swift build -c release --arch arm64 --arch x86_64 -Xswiftc -DMAS
-BIN="$(swift build -c release --arch arm64 --arch x86_64 -Xswiftc -DMAS --show-bin-path)/Pesty"
+BIN="$(swift build -c release --arch arm64 --arch x86_64 -Xswiftc -DMAS --show-bin-path)/Pasty"
 bash scripts/make_icon.sh >/dev/null
 
 echo "==> Assembling $APP"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN" "$APP/Contents/MacOS/Pesty"
-cp packaging/Pesty.icns "$APP/Contents/Resources/Pesty.icns"
+cp "$BIN" "$APP/Contents/MacOS/Pasty"
+cp packaging/Pasty.icns "$APP/Contents/Resources/Pasty.icns"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD/" packaging/Info.plist > "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 cp "$PROFILE" "$APP/Contents/embedded.provisionprofile"
 
 echo "==> Signing for the Mac App Store (sandboxed)"
-codesign --force --timestamp --entitlements "$ENT" --sign "$APP_IDENTITY" "$APP/Contents/MacOS/Pesty"
+codesign --force --timestamp --entitlements "$ENT" --sign "$APP_IDENTITY" "$APP/Contents/MacOS/Pasty"
 codesign --force --timestamp --entitlements "$ENT" --sign "$APP_IDENTITY" "$APP"
 
 echo "==> Building signed installer package"

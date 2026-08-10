@@ -1,21 +1,5 @@
 import SwiftUI
 
-struct Pinboard: Identifiable, Codable, Equatable {
-    let id: UUID
-    var name: String
-    var colorHex: String
-    var items: [ClipItem]
-
-    init(id: UUID = UUID(), name: String, colorHex: String = "#5B8DEF", items: [ClipItem] = []) {
-        self.id = id
-        self.name = name
-        self.colorHex = colorHex
-        self.items = items
-    }
-
-    var color: Color { Color(hex: colorHex) ?? .accentColor }
-}
-
 extension Color {
     init?(hex: String) {
         var s = hex.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -25,7 +25,7 @@ private struct GeneralSettings: View {
     var body: some View {
         Form {
             Section("Activation") {
-                LabeledContent("Show Pesty") { HotkeyRecorderView() }
+                LabeledContent("Show Pasty") { HotkeyRecorderView() }
                 Stepper(value: $settings.historyLimit, in: 50...5000, step: 50) {
                     LabeledContent("History limit", value: "\(settings.historyLimit) items")
                 }
@@ -53,7 +53,7 @@ private struct GeneralSettings: View {
                     get: { settings.iCloudSync },
                     set: { _ in AppController.shared.toggleICloudSync() }))
                 Text(ClipboardStore.shared.iCloudAvailable
-                     ? "Keeps your history and pinboards in sync across your Macs through iCloud Drive."
+                     ? "Keeps your clips and pins in sync across your Macs through iCloud Drive."
                      : "Sign in to iCloud and enable iCloud Drive to use sync.")
                     .font(.caption).foregroundStyle(.secondary)
             }
@@ -69,7 +69,7 @@ private struct GeneralSettings: View {
                         Text(accessibilityGranted
                              ? "Granted — direct paste is enabled."
                              : (requestedGrant
-                                ? "Waiting… toggle Pesty on in System Settings."
+                                ? "Waiting… toggle Pasty on in System Settings."
                                 : "Required to paste directly into other apps."))
                             .font(.caption)
                             .foregroundStyle(accessibilityGranted ? .green : .secondary)
@@ -82,7 +82,7 @@ private struct GeneralSettings: View {
                             openAccessibilityPane()
                         }
                     } else if requestedGrant {
-                        Button("Restart Pesty") { AppController.restart() }
+                        Button("Restart Pasty") { AppController.restart() }
                     }
                 }
             }
@@ -118,7 +118,7 @@ private struct AboutView: View {
         VStack(spacing: 12) {
             Image(nsImage: NSApp.applicationIconImage ?? NSImage())
                 .resizable().frame(width: 88, height: 88)
-            Text("Pesty").font(.system(size: 26, weight: .bold))
+            Text("Pasty").font(.system(size: 26, weight: .bold))
             Text("Version \(Bundle.main.appVersion)")
                 .font(.subheadline).foregroundStyle(.secondary)
             Text("A free, open-source clipboard manager for macOS.\nInspired by Paste.")
@@ -126,8 +126,8 @@ private struct AboutView: View {
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
             HStack(spacing: 16) {
-                Link("GitHub", destination: URL(string: "https://github.com/momenbasel/pesty")!)
-                Link("Report an Issue", destination: URL(string: "https://github.com/momenbasel/pesty/issues")!)
+                Link("GitHub", destination: URL(string: "https://github.com/momenbasel/pasty")!)
+                Link("Report an Issue", destination: URL(string: "https://github.com/momenbasel/pasty/issues")!)
             }
             .padding(.top, 4)
             Spacer()

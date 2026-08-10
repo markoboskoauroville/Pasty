@@ -23,13 +23,30 @@ struct BarView: View {
         HStack(spacing: 14) {
             syncButton
             searchIndicator
-            PinboardTabs()
-                .layoutPriority(1)
             Spacer(minLength: 8)
+            pinnedBadge
             moreMenu
         }
         .padding(.horizontal, 18)
         .frame(height: 56)
+    }
+
+    /// Quiet count of how many cards are held at the front.
+    @ViewBuilder
+    private var pinnedBadge: some View {
+        if store.pinnedCount > 0 {
+            HStack(spacing: 5) {
+                Image(systemName: "pin.fill")
+                    .font(.system(size: 10, weight: .semibold))
+                Text("\(store.pinnedCount)")
+                    .font(.system(size: 11.5, weight: .semibold))
+            }
+            .foregroundStyle(Theme.pin)
+            .padding(.horizontal, 9)
+            .frame(height: 24)
+            .background(Theme.fieldBG, in: Capsule())
+            .help("\(store.pinnedCount) pinned")
+        }
     }
 
     private var syncButton: some View {
@@ -70,10 +87,13 @@ struct BarView: View {
     private var moreMenu: some View {
         Menu {
             Button("Settings…") { AppController.shared.showSettings() }
-            Button("Clear History") { store.clearHistory() }
+            Button("Clear Unpinned") { store.clearHistory() }
+            Button("Remove Everything, Pins Included", role: .destructive) {
+                store.removeAllIncludingPinned()
+            }
             Divider()
-            Button("About Pesty") { AppController.shared.showAbout() }
-            Button("Quit Pesty") { NSApp.terminate(nil) }
+            Button("About Pasty") { AppController.shared.showAbout() }
+            Button("Quit Pasty") { NSApp.terminate(nil) }
         } label: {
             Image(systemName: "ellipsis")
                 .font(.system(size: 15, weight: .semibold))

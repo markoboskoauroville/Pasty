@@ -11,6 +11,8 @@ enum Theme {
     static let cardBody = Color(red: 0.11, green: 0.11, blue: 0.12)
     static let cardBorder = Color.white.opacity(0.07)
     static let selection = Color(red: 0.20, green: 0.55, blue: 1.0)
+    /// Pin state. Colour on a card means pinned and nothing else.
+    static let pin = Color(red: 0.91, green: 0.69, blue: 0.36)
 
     static let textPrimary = Color.white.opacity(0.95)
     static let textSecondary = Color.white.opacity(0.55)

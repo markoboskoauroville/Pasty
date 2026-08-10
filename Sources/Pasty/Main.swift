@@ -1,7 +1,7 @@
 import AppKit
 
 @main
-struct PestyMain {
+struct PastyMain {
     static func main() {
         let app = NSApplication.shared
         let delegate = AppController.shared

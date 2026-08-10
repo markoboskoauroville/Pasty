@@ -16,6 +16,10 @@ struct ClipItem: Identifiable, Codable, Equatable {
     var customTitle: String?
     var createdAt: Date
 
+    /// Pinned items live at the head of the single board in a manual order the
+    /// user controls. They are never trimmed by the history limit.
+    var pinned: Bool
+
     init(id: UUID = UUID(),
          type: ClipType,
          text: String? = nil,
@@ -27,7 +31,8 @@ struct ClipItem: Identifiable, Codable, Equatable {
          sourceBundleID: String? = nil,
          sourceAppName: String? = nil,
          customTitle: String? = nil,
-         createdAt: Date = Date()) {
+         createdAt: Date = Date(),
+         pinned: Bool = false) {
         self.id = id
         self.type = type
         self.text = text
@@ -40,6 +45,32 @@ struct ClipItem: Identifiable, Codable, Equatable {
         self.sourceAppName = sourceAppName
         self.customTitle = customTitle
         self.createdAt = createdAt
+        self.pinned = pinned
+    }
+
+    // Written by hand rather than synthesized so that a store.json produced by an
+    // older build, which has no `pinned` key at all, still decodes instead of
+    // throwing and taking the whole history down with it.
+    private enum CodingKeys: String, CodingKey {
+        case id, type, text, rtfData, imageFileName, imageHash, fileURLs
+        case colorHex, sourceBundleID, sourceAppName, customTitle, createdAt, pinned
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        type = try c.decodeIfPresent(ClipType.self, forKey: .type) ?? .text
+        text = try c.decodeIfPresent(String.self, forKey: .text)
+        rtfData = try c.decodeIfPresent(Data.self, forKey: .rtfData)
+        imageFileName = try c.decodeIfPresent(String.self, forKey: .imageFileName)
+        imageHash = try c.decodeIfPresent(String.self, forKey: .imageHash)
+        fileURLs = try c.decodeIfPresent([String].self, forKey: .fileURLs) ?? []
+        colorHex = try c.decodeIfPresent(String.self, forKey: .colorHex)
+        sourceBundleID = try c.decodeIfPresent(String.self, forKey: .sourceBundleID)
+        sourceAppName = try c.decodeIfPresent(String.self, forKey: .sourceAppName)
+        customTitle = try c.decodeIfPresent(String.self, forKey: .customTitle)
+        createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        pinned = try c.decodeIfPresent(Bool.self, forKey: .pinned) ?? false
     }
 
     var charCount: Int { text?.count ?? 0 }

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Pesty are documented here. The format is based on
+All notable changes to Pasty are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
@@ -24,7 +24,7 @@ Visual overhaul to match Paste, plus iCloud sync.
 - Search input and keyboard navigation reliability.
 - Removed the unnecessary Apple Events entitlement.
 
-[1.1.0]: https://github.com/momenbasel/pesty/releases/tag/v1.1.0
+[1.1.0]: https://github.com/momenbasel/pasty/releases/tag/v1.1.0
 
 ## [1.0.0] - 2026-06-26
 
@@ -44,4 +44,4 @@ Initial public release.
 - Universal binary (Apple Silicon + Intel), signed with Developer ID and
   notarized by Apple.
 
-[1.0.0]: https://github.com/momenbasel/pesty/releases/tag/v1.0.0
+[1.0.0]: https://github.com/momenbasel/pasty/releases/tag/v1.0.0
