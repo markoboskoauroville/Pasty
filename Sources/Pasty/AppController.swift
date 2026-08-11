@@ -68,6 +68,12 @@ final class AppController: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if let button = item.button {
             button.image = NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: "Pasty")
             button.image?.isTemplate = true
+            button.toolTip = """
+                Pasty — clipboard manager
+                Keeps what you copy on one board. Click any card to paste it \
+                into the app you came from; pin the ones you want to keep.
+                Shortcut: \(Settings.shared.hotkeyDisplay)
+                """
         }
         let menu = NSMenu()
         let open = menu.addItem(withTitle: openItemTitle,
