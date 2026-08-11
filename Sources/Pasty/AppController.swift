@@ -91,8 +91,8 @@ final class AppController: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// The first line of the menu doubles as the shortcut reminder.
     private var openItemTitle: String { "Open Pasty      \(Settings.shared.hotkeyDisplay)" }
 
-    nonisolated func menuWillOpen(_ menu: NSMenu) {
-        MainActor.assumeIsolated { openMenuItem?.title = openItemTitle }
+    func menuWillOpen(_ menu: NSMenu) {
+        openMenuItem?.title = openItemTitle
     }
 
     @objc private func menuOpen() { showBar() }

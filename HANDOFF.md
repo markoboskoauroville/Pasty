@@ -90,6 +90,25 @@ Developer ID signature.
 `./pasty.sh` is the fallback single file installer with the standard menu. It
 targets `/Applications` when writable, otherwise `~/Applications`.
 
+## Toolchain floor
+
+`Package.swift` is **swift-tools-version 5.9 on purpose. Do not raise it.**
+
+The manifest is compiled by whatever Swift the user has, not by the Swift that
+wrote it. The 6.0 manifest API uses `swiftLanguageModes`, which does not exist on
+older toolchains, and a Command Line Tools install that lags Xcode by a release
+fails on it with `extra argument 'swiftLanguageModes' in call`. Below 6.0 the
+default language mode is already Swift 5, so the explicit parameter bought
+nothing and cost an install.
+
+**CI cannot catch this class of bug.** GitHub's macos runners carry a newer
+toolchain than a typical CLT-only Mac, so a manifest that only new Swift can
+parse builds green in CI and fails on the actual target machine. When a build
+works in CI but not on his Mac, suspect the version floor first.
+
+Same reasoning applies inside the sources: nothing newer than Swift 5.9 syntax.
+`MainActor.assumeIsolated` in ClipboardMonitor is the ceiling currently relied on.
+
 ## Building without full Xcode
 
 `swift build --arch arm64 --arch x86_64` produces a universal binary through
