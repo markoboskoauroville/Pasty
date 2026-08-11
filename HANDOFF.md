@@ -72,7 +72,23 @@ is expected and only happens once.
 The formula builds from source, which means brew clones this private repo using
 whatever git credential is already configured. `gh auth login` once and it works.
 
-`./pasty.sh` is the fallback single file installer with the standard menu.
+**Trap, cost one round trip.** A Homebrew *formula* installs into the Cellar and
+has no `App` stanza, so nothing lands in Finder. Only a *cask* installs into
+Applications, and a cask needs a signed downloadable artifact, which a
+build-from-source private repo does not have. The formula's `post_install` now
+links `opt_prefix/Pasty.app` into `/Applications`, falling back to
+`~/Applications`. `opt_prefix` is stable across upgrades so the link never goes
+stale. Do not "fix" this by converting to a cask without first producing signed
+release artifacts.
+
+**Accessibility is lost on every upgrade.** The binary is built locally and not
+signed with a Developer ID, so its cdhash changes with each build and macOS
+invalidates the Accessibility grant. Toggle Pasty off and on in System Settings,
+Privacy and Security, Accessibility after each upgrade. The only real fix is a
+Developer ID signature.
+
+`./pasty.sh` is the fallback single file installer with the standard menu. It
+targets `/Applications` when writable, otherwise `~/Applications`.
 
 ## Open
 

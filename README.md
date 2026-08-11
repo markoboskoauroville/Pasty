@@ -47,8 +47,15 @@ Or the single file installer, which asks nothing and takes one keypress:
 ./pasty.sh
 ```
 
-Both build from source. One click pasting needs Accessibility permission, which
-macOS asks for on first use.
+Both build from source and put `Pasty.app` in your Applications folder.
+
+Pasty is a menu bar app with no Dock icon. Open it once from Applications, then
+reach it with `Cmd Shift V` or the clipboard icon in the menu bar.
+
+One click pasting needs Accessibility permission, which macOS asks for on first
+use. Because the app is built locally and not signed with a Developer ID, macOS
+forgets that grant whenever the binary changes, so switch Pasty off and on again
+in System Settings, Privacy and Security, Accessibility after an upgrade.
 
 ## Build by hand
 

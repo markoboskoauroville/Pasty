@@ -5,7 +5,7 @@ set -uo pipefail
 
 REPO_URL="https://github.com/markoboskoauroville/Pasty.git"
 SRC="$HOME/.pasty-src"
-APP_DIR="$HOME/Applications"
+if [ -w /Applications ]; then APP_DIR="/Applications"; else APP_DIR="$HOME/Applications"; fi
 APP="$APP_DIR/Pasty.app"
 
 if [ -t 1 ]; then
@@ -98,10 +98,10 @@ do_uninstall() {
   read -rsn1 k; printf '\n'
   case "$k" in
     a|A)
-      rm -rf "$APP" "$SRC"
+      rm -rf "$APP" "$HOME/Applications/Pasty.app" "$SRC"
       printf '  %sapp removed, clips kept%s\n' "$OK" "$Z" ;;
     e|E)
-      rm -rf "$APP" "$SRC"
+      rm -rf "$APP" "$HOME/Applications/Pasty.app" "$SRC"
       rm -rf "$HOME/Library/Application Support/Pasty"
       defaults delete com.mantraproductions.pasty 2>/dev/null
       printf '  %severything removed%s\n' "$OK" "$Z" ;;
