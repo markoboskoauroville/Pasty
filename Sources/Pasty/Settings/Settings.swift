@@ -21,6 +21,9 @@ final class Settings {
         static let barHeight = "barHeight"
         static let onboarded = "onboarded"
         static let iCloudSync = "iCloudSync"
+        /// One flag per migration batch. Never reuse an old flag: rerunning a
+        /// past pass would overwrite settings the user changed by hand.
+        static let migratedHotkeyCmdCtrlA = "migration.hotkeyCmdCtrlA"
     }
 
     var historyLimit: Int {
@@ -79,8 +82,8 @@ final class Settings {
     private init() {
         d.register(defaults: [
             Keys.historyLimit: 500,
-            Keys.hotkeyKeyCode: kVK_ANSI_V,
-            Keys.hotkeyModifiers: cmdKey | shiftKey,
+            Keys.hotkeyKeyCode: kVK_ANSI_A,
+            Keys.hotkeyModifiers: cmdKey | controlKey,
             Keys.launchAtLogin: false,
             Keys.pasteDirectly: true,
             Keys.playSound: false,
@@ -99,6 +102,24 @@ final class Settings {
         barHeight = d.double(forKey: Keys.barHeight)
         onboarded = d.bool(forKey: Keys.onboarded)
         iCloudSync = d.bool(forKey: Keys.iCloudSync)
+
+        // A changed registered default never reaches a preference that was
+        // already written, so an existing install would have kept Cmd Shift V.
+        // This pass sets the shortcut once and marks itself done.
+        //
+        // It MUST run while isLoaded is still false. The didSet on these two
+        // properties calls HotKeyCenter.reload(), which reads Settings.shared,
+        // and Settings.shared is mid-initialisation right here. Touching it
+        // would be a recursive access to a static that is still being created.
+        // So the guards swallow the didSet and UserDefaults is written by hand.
+        if !d.bool(forKey: Keys.migratedHotkeyCmdCtrlA) {
+            hotkeyKeyCode = kVK_ANSI_A
+            hotkeyModifiers = cmdKey | controlKey
+            d.set(kVK_ANSI_A, forKey: Keys.hotkeyKeyCode)
+            d.set(cmdKey | controlKey, forKey: Keys.hotkeyModifiers)
+            d.set(true, forKey: Keys.migratedHotkeyCmdCtrlA)
+        }
+
         isLoaded = true
     }
 

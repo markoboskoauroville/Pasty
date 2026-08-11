@@ -23,7 +23,7 @@ Pasty removes that idea entirely.
 
 | Key | Action |
 | --- | --- |
-| `Cmd Shift V` | open Pasty |
+| `Cmd Ctrl A` | open Pasty |
 | `Cmd 1` … `Cmd 9` | paste that card |
 | `Cmd P` | pin or unpin the highlighted card |
 | `Cmd Option ←` / `→` | move a pinned card along |
@@ -50,7 +50,7 @@ Or the single file installer, which asks nothing and takes one keypress:
 Both build from source and put `Pasty.app` in your Applications folder.
 
 Pasty is a menu bar app with no Dock icon. Open it once from Applications, then
-reach it with `Cmd Shift V` or the clipboard icon in the menu bar.
+reach it with `Cmd Ctrl A` or the clipboard icon in the menu bar.
 
 One click pasting needs Accessibility permission, which macOS asks for on first
 use. Because the app is built locally and not signed with a Developer ID, macOS

@@ -21,7 +21,7 @@ One board. There are no pinboards, no tabs, no second list.
 
 | Key | Action |
 | --- | --- |
-| `Cmd Shift V` | open Pasty (configurable) |
+| `Cmd Ctrl A` | open Pasty (configurable) |
 | `Cmd 1` … `Cmd 9` | paste that card |
 | `Cmd P` | pin or unpin the highlighted card |
 | `Cmd Option ←` / `→` | move a pinned card along |
@@ -89,6 +89,21 @@ Developer ID signature.
 
 `./pasty.sh` is the fallback single file installer with the standard menu. It
 targets `/Applications` when writable, otherwise `~/Applications`.
+
+## Settings migrations
+
+The open shortcut default is **Cmd Ctrl A** (`kVK_ANSI_A`, `cmdKey | controlKey`).
+
+`Settings.init` runs a one-time pass behind `migration.hotkeyCmdCtrlA`, because a
+changed `register(defaults:)` value never reaches a preference that was already
+written. Every future batch needs its OWN flag. Never bump an old one: that
+re-runs its whole pass and overwrites settings the user set by hand.
+
+**Trap.** The pass must run while `isLoaded` is still `false`. The `didSet` on
+`hotkeyKeyCode` and `hotkeyModifiers` calls `HotKeyCenter.reload()`, which reads
+`Settings.shared` while `Settings.shared` is still being constructed. That is a
+recursive access to a static mid-initialisation. The pass therefore sits above
+`isLoaded = true` and writes `UserDefaults` by hand.
 
 ## Open
 
