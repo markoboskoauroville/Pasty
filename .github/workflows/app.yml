@@ -1,0 +1,45 @@
+name: Build app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  app:
+    name: Build and publish Pasty.app
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build app bundle
+        run: VERSION=1.0.0 BUILD=${{ github.run_number }} ./scripts/build_app.sh
+
+      - name: Zip
+        run: |
+          cd packaging
+          ditto -c -k --sequesterRsrc --keepParent Pasty.app "../Pasty-build-${{ github.run_number }}.zip"
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "build-${{ github.run_number }}" \
+            "Pasty-build-${{ github.run_number }}.zip" \
+            --title "Pasty build ${{ github.run_number }}" \
+            --notes "Unsigned local build. Unzip, move to /Applications, then run: xattr -dr com.apple.quarantine /Applications/Pasty.app"
+
+          # Release hygiene: keep only the two newest. One is too few, because a
+          # link already handed over dies the moment the next push publishes.
+          gh release list --limit 100 --json tagName,createdAt \
+            | python3 -c "
+import json,sys,subprocess
+rs = sorted(json.load(sys.stdin), key=lambda r: r['createdAt'], reverse=True)
+for r in rs[2:]:
+    subprocess.run(['gh','release','delete',r['tagName'],'--yes','--cleanup-tag'])
+    print('deleted', r['tagName'])
+"
