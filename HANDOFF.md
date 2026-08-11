@@ -107,15 +107,21 @@ recursive access to a static mid-initialisation. The pass therefore sits above
 
 ## Icon
 
-`packaging/icon_1024.png` is checked in and `scripts/make_icon.sh` fans it out
-with `sips` and `iconutil`. `scripts/IconGen.swift` is gone: a Swift drawing
-script that cannot be rendered or reviewed before it runs is a poor place to
-keep artwork.
+`assets/icon_1024.png` is the tracked source artwork. `scripts/make_icon.sh`
+fans it out with `sips` and `iconutil` into `packaging/Pasty.icns`.
+`scripts/IconGen.swift` is gone: a Swift drawing script that cannot be reviewed
+before it runs is a poor place to keep artwork.
 
-The mark is his soundwave logo, measured column by column off the original and
-rebuilt as eighteen rounded bars on a baseline, dark orange `#D2691E` on a
-near-black plate. Regenerate by editing the BARS table in the icon script kept
-with the commit that introduced it.
+The mark is the Mantra soundwave, measured column by column off the original
+logo and rebuilt as rounded bars on a baseline, dark orange `#D2691E` on a
+near-black plate. Reshape it by editing `BARS` in `scripts/icon_gen.py`, then
+run that script and `make_icon.sh`.
+
+**Trap, cost one red build.** The icon first went into `packaging/`, where
+`.gitignore` line 12 excludes `icon_1024.png` by name because upstream generated
+it there. `git add -A` skipped it without a word, the local build was fine, and
+CI died on a missing file. Source artwork goes in `assets/`. `packaging/` is
+generated output only, and anything put there will silently fail to ship.
 
 ## Menus
 

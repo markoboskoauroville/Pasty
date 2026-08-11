@@ -2,10 +2,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# packaging/icon_1024.png is checked in, so the icon no longer depends on a
-# Swift drawing script running correctly at build time.
-SRC="packaging/icon_1024.png"
-[ -f "$SRC" ] || { echo "missing $SRC"; exit 1; }
+# The source artwork lives in assets/ and is tracked. packaging/ stays what it
+# has always been, a folder of generated output that .gitignore excludes, which
+# is exactly why an icon left there never reached CI.
+SRC="assets/icon_1024.png"
+[ -f "$SRC" ] || { echo "missing $SRC, run: python3 scripts/icon_gen.py" >&2; exit 1; }
 
 ICONSET="packaging/Pasty.iconset"
 rm -rf "$ICONSET"
