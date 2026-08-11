@@ -90,6 +90,26 @@ Developer ID signature.
 `./pasty.sh` is the fallback single file installer with the standard menu. It
 targets `/Applications` when writable, otherwise `~/Applications`.
 
+## Building without full Xcode
+
+`swift build --arch arm64 --arch x86_64` produces a universal binary through
+`xcbuild`, which ships with **full Xcode only, never with the Command Line
+Tools**. On a CLT-only Mac it dies with `xcbuild executable ... does not exist`.
+
+`scripts/build_app.sh` therefore probes for xcbuild and falls back to a
+native-arch build. CI has full Xcode so it still produces a fat binary; a local
+`brew install --HEAD` on Apple Silicon produces arm64 only, which is all a
+personal install needs.
+
+**Removing `depends_on xcode:` from the formula was not enough on its own**,
+because the real requirement was hidden inside the build script, not declared in
+the formula. Check what the scripts actually invoke before trusting a dependency
+list.
+
+**No bash arrays in that script.** macOS ships bash 3.2, where expanding an
+empty array under `set -u` aborts. The two build invocations are written out in
+full instead.
+
 ## Settings migrations
 
 The open shortcut default is **Cmd Ctrl A** (`kVK_ANSI_A`, `cmdKey | controlKey`).
