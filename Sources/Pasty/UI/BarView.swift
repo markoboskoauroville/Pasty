@@ -86,7 +86,9 @@ struct BarView: View {
 
     private var moreMenu: some View {
         Menu {
-            Button("Settings…") { AppController.shared.showSettings() }
+            Section("Open Pasty with \(settings.hotkeyDisplay)") {
+                Button("Settings…") { AppController.shared.showSettings() }
+            }
             Button("Clear Unpinned") { store.clearHistory() }
             Button("Remove Everything, Pins Included", role: .destructive) {
                 store.removeAllIncludingPinned()

@@ -105,6 +105,25 @@ re-runs its whole pass and overwrites settings the user set by hand.
 recursive access to a static mid-initialisation. The pass therefore sits above
 `isLoaded = true` and writes `UserDefaults` by hand.
 
+## Icon
+
+`packaging/icon_1024.png` is checked in and `scripts/make_icon.sh` fans it out
+with `sips` and `iconutil`. `scripts/IconGen.swift` is gone: a Swift drawing
+script that cannot be rendered or reviewed before it runs is a poor place to
+keep artwork.
+
+The mark is his soundwave logo, measured column by column off the original and
+rebuilt as eighteen rounded bars on a baseline, dark orange `#D2691E` on a
+near-black plate. Regenerate by editing the BARS table in the icon script kept
+with the commit that introduced it.
+
+## Menus
+
+The first line of the status bar menu is the shortcut reminder, rebuilt in
+`menuWillOpen` so it shows the shortcut actually in force rather than the one
+present at launch. The bar's ellipsis menu carries the same reminder as a
+section header.
+
 ## Open
 
 - No signed release. `release.yml` still expects Developer ID and notarization

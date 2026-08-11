@@ -3,7 +3,7 @@ import SwiftUI
 import Carbon.HIToolbox
 
 @MainActor
-final class AppController: NSObject, NSApplicationDelegate {
+final class AppController: NSObject, NSApplicationDelegate, NSMenuDelegate {
     static let shared = AppController()
 
     let store = ClipboardStore.shared
@@ -13,6 +13,7 @@ final class AppController: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var settingsWindow: NSWindow?
     private var keyMonitor: Any?
+    private var openMenuItem: NSMenuItem?
 
     private(set) var previousApp: NSRunningApplication?
     private(set) var lastActiveApp: NSRunningApplication?
@@ -69,8 +70,13 @@ final class AppController: NSObject, NSApplicationDelegate {
             button.image?.isTemplate = true
         }
         let menu = NSMenu()
-        menu.addItem(withTitle: "Open Pasty   \(Settings.shared.hotkeyDisplay)",
-                     action: #selector(menuOpen), keyEquivalent: "").target = self
+        let open = menu.addItem(withTitle: openItemTitle,
+                                action: #selector(menuOpen), keyEquivalent: "")
+        open.target = self
+        openMenuItem = open
+        // Rebuilt every time the menu opens, so the reminder always shows the
+        // shortcut actually in force rather than the one present at launch.
+        menu.delegate = self
         menu.addItem(.separator())
         menu.addItem(withTitle: "Settings…", action: #selector(menuSettings), keyEquivalent: ",").target = self
         menu.addItem(withTitle: "Clear Unpinned", action: #selector(menuClear), keyEquivalent: "").target = self
@@ -80,6 +86,13 @@ final class AppController: NSObject, NSApplicationDelegate {
         menu.addItem(withTitle: "Quit Pasty", action: #selector(menuQuit), keyEquivalent: "q").target = self
         item.menu = menu
         statusItem = item
+    }
+
+    /// The first line of the menu doubles as the shortcut reminder.
+    private var openItemTitle: String { "Open Pasty      \(Settings.shared.hotkeyDisplay)" }
+
+    nonisolated func menuWillOpen(_ menu: NSMenu) {
+        MainActor.assumeIsolated { openMenuItem?.title = openItemTitle }
     }
 
     @objc private func menuOpen() { showBar() }

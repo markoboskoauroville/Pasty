@@ -2,14 +2,16 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-mkdir -p packaging
-swift scripts/IconGen.swift packaging/icon_1024.png
+# packaging/icon_1024.png is checked in, so the icon no longer depends on a
+# Swift drawing script running correctly at build time.
+SRC="packaging/icon_1024.png"
+[ -f "$SRC" ] || { echo "missing $SRC"; exit 1; }
 
 ICONSET="packaging/Pasty.iconset"
 rm -rf "$ICONSET"
 mkdir -p "$ICONSET"
 
-gen() { sips -z "$1" "$1" packaging/icon_1024.png --out "$ICONSET/$2" >/dev/null; }
+gen() { sips -z "$1" "$1" "$SRC" --out "$ICONSET/$2" >/dev/null; }
 gen 16   icon_16x16.png
 gen 32   icon_16x16@2x.png
 gen 32   icon_32x32.png
