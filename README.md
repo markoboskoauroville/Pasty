@@ -1,3 +1,5 @@
+### [Download the latest build](https://github.com/markoboskoauroville/Pasty/releases/latest)
+
 # Pasty
 
 A clipboard manager for macOS. One board, pins in place.
