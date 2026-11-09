@@ -1,3 +1,7 @@
+
+
+## From the former README (9.11.2026)
+
 ### [Download the latest build](https://github.com/markoboskoauroville/Pasty/releases/latest)
 
 # Pasty
